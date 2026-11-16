@@ -1,0 +1,74 @@
+-- in --
+<foo><bar/></foo>
+-- want --
+<foo>
+	<bar/>
+</foo>
+
+-- in --
+<foo>APPLE</foo>
+-- want --
+<foo>
+	APPLE
+</foo>
+
+-- in --
+<foo><bar>APPLE</bar></foo>
+-- want --
+<foo>
+	<bar>
+		APPLE
+	</bar>
+</foo>
+
+-- in --
+<foo>APPLE<br/>BANANA</foo>
+-- want --
+<foo>
+	APPLE
+	<br/>
+	BANANA
+</foo>
+
+-- in --
+<foo>
+	APPLE
+		<br/>
+			BANANA
+				</foo>
+-- want --
+<foo>
+	APPLE
+	<br/>
+	BANANA
+</foo>
+
+-- in --
+<foo>	APPLE	 </foo>
+-- want --
+<foo>
+	APPLE
+</foo>
+
+-- in --
+<foo   bar="APPLE"   baz="BANANA"> CHERRY   </foo>
+-- want --
+<foo bar="APPLE" baz="BANANA">
+	CHERRY
+</foo>
+
+-- in --
+<foo bar="&quot;APPLE&quot;"></foo>
+-- want --
+<foo bar="&#34;APPLE&#34;">
+</foo>
+
+-- in --
+<foo baz="" bar=""/>
+-- want --
+<foo bar="" baz=""/>
+
+-- in --
+<foo baz="" bar="" class="" id=""/>
+-- want --
+<foo id="" class="" bar="" baz=""/>
