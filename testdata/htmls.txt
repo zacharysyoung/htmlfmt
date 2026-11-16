@@ -1,97 +1,88 @@
--- in --
-<foo><bar/></foo>
+-- simple text --
+<x>APPLE <y>BANANA</y> CHERRY</x>
 -- want --
-<foo>
-	<bar/>
-</foo>
-
--- in --
-<foo>APPLE</foo>
--- want --
-<foo>
+<x>
 	APPLE
-</foo>
-
--- in --
-<foo><bar>APPLE</bar></foo>
--- want --
-<foo>
-	<bar>
-		APPLE
-	</bar>
-</foo>
-
--- in --
-<foo>APPLE<br/>BANANA</foo>
--- want --
-<foo>
-	APPLE
-	<br/>
-	BANANA
-</foo>
-
--- in --
-<foo>
-	APPLE
-		<br/>
-			BANANA
-				</foo>
--- want --
-<foo>
-	APPLE
-	<br/>
-	BANANA
-</foo>
-
--- in --
-<foo>	APPLE	 </foo>
--- want --
-<foo>
-	APPLE
-</foo>
-
--- in --
-<foo   bar="APPLE"   baz="BANANA"> CHERRY   </foo>
--- want --
-<foo bar="APPLE" baz="BANANA">
+	<y>
+		BANANA
+	</y>
 	CHERRY
-</foo>
+</x>
 
--- in --
-<foo bar="&quot;APPLE&quot;"></foo>
+-- simple self-closing --
+<x>APPLE<y/>BANANA</x>
 -- want --
-<foo bar="&#34;APPLE&#34;">
-</foo>
+<x>
+	APPLE
+	<y/>
+	BANANA
+</x>
 
--- in --
-<foo baz="" bar=""/>
+-- remove space between nodes --
+<x>
+
+	APPLE
+
+		<y/>
+
+			BANANA
+
+				</x>
 -- want --
-<foo bar="" baz=""/>
+<x>
+	APPLE
+	<y/>
+	BANANA
+</x>
 
--- in --
-<foo baz="" bar="" class="" id=""/>
+-- normalize space inside text node --
+<x>
+	APPLE
+
+		BANANA
+</x>
 -- want --
-<foo id="" class="" bar="" baz=""/>
-
--- in --
-<foo>
-
-<bar/>
-
-
-</foo>
--- want --
-<foo>
-	<bar/>
-</foo>
-
--- in --
-<foo>
-  APPLE
-
-BANANA
-</foo>
--- want --
-<foo>
+<x>
 	APPLE BANANA
+</x>
+
+-- attrs --
+<foo a="Bar" b="Baz"></foo>
+-- want --
+<foo a="Bar" b="Baz">
 </foo>
+
+-- attrs self-closing --
+<foo a="Bar" b="Baz"/>
+-- want --
+<foo a="Bar" b="Baz"/>
+
+-- escape attr val --
+<foo a="&quot; Bar &quot;"/>
+-- want --
+<foo a="&#34; Bar &#34;"/>
+
+-- sort attrs --
+<foo c="" a="" b=""/>
+-- want --
+<foo a="" b="" c=""/>
+
+-- sort id class rest --
+<foo b="" a="" class="" id=""/>
+-- want --
+<foo id="" class="" a="" b=""/>
+
+-- sort id rest --
+<foo b="" a="" id=""/>
+-- want --
+<foo id="" a="" b=""/>
+
+-- sort class rest --
+<foo b="" a="" class=""/>
+-- want --
+<foo class="" a="" b=""/>
+
+-- boolean attr --
+<foo a/>
+-- want --
+<foo a=""/>

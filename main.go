@@ -82,17 +82,10 @@ func htmlFmt(r io.Reader) []byte {
 	depth := 0
 	for tt := z.Next(); tt != html.ErrorToken; tt = z.Next() {
 		switch tt {
-		case html.SelfClosingTagToken:
-			buf.Write(indent[:depth])
-			name, hasAttr := z.TagName()
-			buf.WriteByte('<')
-			buf.Write(name)
-			if hasAttr {
-				buf.WriteString(sprintAttrs(z))
-			}
-			buf.Write([]byte{'/', '>'})
 		case html.StartTagToken:
 			buf.Write(indent[:depth])
+			depth++
+
 			name, hasAttr := z.TagName()
 			buf.WriteByte('<')
 			buf.Write(name)
@@ -100,18 +93,33 @@ func htmlFmt(r io.Reader) []byte {
 				buf.WriteString(sprintAttrs(z))
 			}
 			buf.WriteByte('>')
-			depth++
+
+		case html.SelfClosingTagToken:
+			buf.Write(indent[:depth])
+
+			name, hasAttr := z.TagName()
+			buf.WriteByte('<')
+			buf.Write(name)
+			if hasAttr {
+				buf.WriteString(sprintAttrs(z))
+			}
+			buf.Write([]byte{'/', '>'})
+
 		case html.TextToken:
 			s := bytes.TrimSpace(z.Text())
 			if len(s) == 0 {
 				continue
 			}
+
 			buf.Write(indent[:depth])
+
 			s = bytes.Join(bytes.Fields(s), []byte{' '})
 			buf.Write(s)
+
 		case html.EndTagToken:
 			depth--
 			buf.Write(indent[:depth])
+
 			name, _ := z.TagName()
 			buf.Write([]byte{'<', '/'})
 			buf.Write(name)
