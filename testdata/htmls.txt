@@ -72,3 +72,26 @@
 <foo baz="" bar="" class="" id=""/>
 -- want --
 <foo id="" class="" bar="" baz=""/>
+
+-- in --
+<foo>
+
+<bar/>
+
+
+</foo>
+-- want --
+<foo>
+	<bar/>
+</foo>
+
+-- in --
+<foo>
+  APPLE
+
+BANANA
+</foo>
+-- want --
+<foo>
+	APPLE BANANA
+</foo>

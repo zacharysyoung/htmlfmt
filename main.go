@@ -102,8 +102,13 @@ func htmlFmt(r io.Reader) []byte {
 			buf.WriteByte('>')
 			depth++
 		case html.TextToken:
+			s := bytes.TrimSpace(z.Text())
+			if len(s) == 0 {
+				continue
+			}
 			buf.Write(indent[:depth])
-			buf.Write(bytes.TrimSpace(z.Text()))
+			s = bytes.Join(bytes.Fields(s), []byte{' '})
+			buf.Write(s)
 		case html.EndTagToken:
 			depth--
 			buf.Write(indent[:depth])
@@ -137,11 +142,12 @@ func sprintAttrs(z *html.Tokenizer) string {
 		}
 	}
 	slices.Sort(attrs)
+	// insert in reverse order
+	if class != "" {
+		attrs = slices.Insert(attrs, 0, class)
+	}
 	if id != "" {
 		attrs = slices.Insert(attrs, 0, id)
-	}
-	if class != "" {
-		attrs = slices.Insert(attrs, 1, class)
 	}
 	return " " + strings.Join(attrs, " ")
 }
